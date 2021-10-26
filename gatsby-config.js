@@ -1,14 +1,14 @@
 module.exports = {
   siteMetadata: {
-    title: `Gatsby Starter Blog`,
+    title: `Historical Modeling`,
     author: {
-      name: `Kyle Mathews`,
-      summary: `who lives and works in San Francisco building useful things.`,
+      name: `Michael L Perry`,
+      summary: `Software Mathematician`,
     },
-    description: `A starter blog demonstrating what Gatsby can do.`,
-    siteUrl: `https://gatsbystarterblogsource.gatsbyjs.io/`,
+    description: `A system for analyzing and building distributed systems.`,
+    siteUrl: `https://historicalmodeling.com/`,
     social: {
-      twitter: `kylemathews`,
+      twitter: `michaellperry`,
     },
   },
   plugins: [
