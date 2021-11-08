@@ -18,18 +18,66 @@ status: "Published"
 
 Let's make these ideas concrete.
 Consider a learning platform.
-This might be used for corporate training or for formal education.
-Through this platform, educators offer classes, and learners register to take them.
+Through this platform, professors offer classes, and students register to take them.
 Let's represent these concepts as historical facts.
 
 ```dot
 digraph {
   rankdir=BT
 
-  Offering -> Educator, Class
-  Registration -> Learner, Offering
+  Offering -> Professor, Class
+  Registration -> Student, Offering
 }
 ```
+
+The actors "Professor" and "Student" are facts.
+There will, of course, be multiple instances of these actors, but this particular diagram is all about the types.
+We'll see other diagrams that are about instances later.
+
+An "Offering" is the fact that a professor has offered a class.
+The idea here is that there will be a class -- for example MATH 1710: Calculus I.
+A professor might offer that class several times, over several semesters.
+In fact, different professors may offer that same class.
+Each offering is a specific instance of a professor teaching a class.
+
+When a student registers for a class, they are actually registering for a specific offering.
+That's why the "Registration" fact points to the "Offering", not the "Class".
+Through that registration, the student can see which class they've signed up for.
+And they can also see which instructor will be teaching the class.
+All of that information is captured indirectly as predecessors of the registration.
+
+## Tombstones
+
+A historical fact is something that has happened.
+No matter what happens next, that fact happened.
+You cannot take it back.
+So does that mean that a student can't change their mind?
+Can they not drop a class?
+
+Of course they can.
+It just needs to be represented in the model.
+Dropping a class is itself a historical fact.
+
+```dot
+digraph {
+  rankdir=BT
+
+  Offering -> Professor, Class
+  Registration -> Student, Offering
+  Drop -> Registration
+}
+```
+
+Notice how the "Drop" fact points to the "Registration".
+Even though we say a student "dropped a class", it's really a specific registration for a specific offering that the student dropped.
+They can always register for a different offering of that class later.
+In fact, they could even re-register for the same offering if they change their mind again.
+
+We can't delete facts.
+But we can create new facts that tell us that they should be deleted.
+These new facts are called "tombstones".
+They mark the end of life of a fact.
+But that fact did live.
 
 # CRDTs
 
