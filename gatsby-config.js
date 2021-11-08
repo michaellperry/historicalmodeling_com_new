@@ -16,8 +16,8 @@ module.exports = {
     {
       resolve: `gatsby-source-filesystem`,
       options: {
-        path: `${__dirname}/content/implementation`,
-        name: `implementation`,
+        path: `${__dirname}/content`,
+        name: `content`,
       },
     },
     {
@@ -37,6 +37,7 @@ module.exports = {
               maxWidth: 630,
             },
           },
+          `gatsby-remark-graphviz`,
           {
             resolve: `gatsby-remark-responsive-iframe`,
             options: {

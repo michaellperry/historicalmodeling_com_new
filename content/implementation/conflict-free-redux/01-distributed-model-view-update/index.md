@@ -2,6 +2,7 @@
 title: "Distributed Model-View-Update"
 date: "2021-11-02T11:45:58Z"
 description: "Reduce over past actions to compute current state. But do it between the client and the server."
+status: "Published"
 ---
 
 ## Reduction Beats Mutation
