@@ -5,14 +5,16 @@ description: "Find the historical facts within any problem domain. The relations
 status: "Published"
 ---
 
-# Learning Objectives
+Historical Modeling is an analytical practice.
+It's all about defining the historical facts that make up a domain.
+When you hear *facts*, you could think *events* -- things that have happened in the past.
+But facts can also represent entities, actors, relationships, modifications, even destruction.
+It's all in how the facts are related.
 
-- Recognize a historical model
-- Identify historical facts within a domain
-- Relate successors to their predecessors
-- Compare to Event Sourcing
-- Understand that a model constrains a solution
-- Understand that those constraints enable certain capabilities
+Fortunately, there is only one relationship between facts: the predecessor/successor relationship.
+The *predecessor* is the fact that was earlier.
+The *successor* was later.
+We can build a causal graph of facts using only this relationship.
 
 ## Example: A Learning Platform
 
@@ -31,11 +33,13 @@ digraph {
 ```
 
 The actors "Professor" and "Student" are facts.
-There will, of course, be multiple instances of these actors, but this particular diagram is all about the types.
-We'll see other diagrams that are about instances later.
+If you want to think of these as events, the are the hiring of a professor and the enrollment of a student.
+In other kinds of models, you might be encouraged to use a past-tense verb phrase, such as "StudentEnrolled".
+But in this system, we recognize that the enrollment creates -- indeed *defines* -- the student.
+And so the fact of enrollment is the same as the fact of the student.
 
 An "Offering" is the fact that a professor has offered a class.
-The idea here is that there will be a class -- for example MATH 1710: Calculus I.
+The idea here is that there will be a class -- for example "MATH 1710: Calculus I".
 A professor might offer that class several times, over several semesters.
 In fact, different professors may offer that same class.
 Each offering is a specific instance of a professor teaching a class.
@@ -79,24 +83,58 @@ These new facts are called "tombstones".
 They mark the end of life of a fact.
 But that fact did live.
 
-# CRDTs
+## Putting Facts In Order
 
-I would start with analyzing the domain in terms of events.
-That will help with whatever path you end up taking.
-One thing I would add is to explicitly document where one event depends upon another.
-Draw an arrow from the subsequent event to its predecessor.
-This gives you a directed acyclic graph of history (what I call a historical model).
- 
-From there you have options.
-For one, you could implement your application directly in terms of those events (what I call facts, because they are partially ordered unlike traditional events).
-For another, you could go with the RabbitMQ solution and use a topological order (one of the possible orderings through the DAG).
- 
-I wish I could give you a turnkey solution for CRDTs.
-I’m working on one right now (Jinaga.NET), but it is not ready for prime time.
-I’ve explored a couple of the general-purpose CRDT implementations (mostly for other platforms), and found them lacking.
-They basically give you lists and property bags, not rich application behavior.
- 
-I would love to spend some time with you exploring the domain and identifying the historical model.
-This is an exercise I do on most of my projects, and it unlocks a great deal of value.
-From there, the next step should become clearer.
- 
+In this model, it makes sense that a student must have registered for a class offering before dropping the class.
+Doing things in the opposite order wouldn't make any sense.
+The "Registration" preceeds the "Drop".
+You can call "Registration" the *predecessor*, and "Drop" the *successor*.
+
+The model indicates this order with an arrow.
+The head of the arrow points to the predecessor, while the tail is on the successor.
+Sure, the arrow helps us answer a question: *which* registration was dropped.
+But just as importantly, it defines an order between those two facts.
+
+So what about the order between two other facts, say the "Student" and the "Class".
+Did the student enroll in this school before MATH 1710 was offered?
+Or did they know about that class ahead of time?
+The model doesn't say.
+It could have happened in either order.
+And the result would have been the same.
+
+Other systems of modeling would put these two events in order.
+A temporal model, for example, puts a time stamp on every event.
+An event-sourced system would put them into a sequential store.
+In either case, you could tell which one came first.
+
+But a historical model lets order be ambiguous if there is no arrow (or path of arrows) joining two facts.
+Temporal models and event sourcing put events into a *total order*.
+Historical models put facts into a *partial order*.
+This distinction is the defining characteristic of a historical model, and gives rise to its advantages.
+
+## What To Expect
+
+A historical model will reveal a great deal about a problem domain.
+Once you document the obvious orderings like "Registration" before "Drop", you will start to discover less obvious constraints.
+You might even start to question some of those choices.
+Do I really need to identify a "Professor" before "Registration"?
+Or can I find the professor later?
+Could I perhaps hire an instructor the week before class starts?
+
+A historical model will show you where you have made assumptions.
+Maybe something you believed to be true wouldn't actually work in practice.
+The model will reveal that.
+And it will give you options for rewriting these assumptions to turn them into something practical.
+
+But don't expect historical modeling to be easy.
+Coming up with a good model for a domain takes practice.
+Knowing that it's "the right" model may be impossible.
+There are always trade-offs.
+A historical model makes those trade-offs visible.
+
+Most importantly, expect your model to challenge you.
+It will show you all of the flaws in your reasoning.
+It will not allow you to quietly gloss over a mistake and pretend that it won't have consequences.
+It will put those mistakes in a spotlight for anyone who cares to look.
+
+And seeing your mistakes, you will be able to correct them before they turn into problems.
